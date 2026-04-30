@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Neural Transcript | Tech & Culture</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Loading Playfair Display for that high-end editorial/Times style and Inter for UI elements */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
+
+        :root {
+            --bg-tan: #f5f2ed;
+            --accent-beige: #e9e3d8;
+            --text-dark: #2c2926;
+            --text-muted: #6b645c;
+        }
+
+        body {
+            background-color: var(--bg-tan);
+            color: var(--text-dark);
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        /* Using Playfair Display for the "Times New Roman" classic serif look */
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            letter-spacing: -0.02em;
+        }
+
+        .main-title {
+            font-size: 4rem;
+            line-height: 1;
+            /* Explicit fallback to Times New Roman style stack */
+            font-family: 'Playfair Display', 'Times New Roman', Times, serif;
+        }
+
+        .tab-active {
+            border-bottom: 2px solid var(--text-dark);
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .blog-card {
+            background: white;
+            border: 1px solid var(--accent-beige);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- Header & Navigation -->
+    <header class="py-16 px-6 max-w-4xl mx-auto text-center">
+        <h1 class="main-title mb-4 italic">The Neural Transcript</h1>
+        <p class="text-sm tracking-[0.2em] uppercase text-muted mb-12">Dispatches from the frontier of AI and Human Thought</p>
+
+        <!-- Tabs -->
+        <nav class="flex justify-center space-x-8 border-b border-[#dcd6cc]">
+            <button onclick="filterArticles('all')" id="tab-all" class="tab-active pb-3 text-xs uppercase tracking-widest text-muted hover:text-dark transition-colors font-medium">All News</button>
+            <button onclick="filterArticles('ai')" id="tab-ai" class="pb-3 text-xs uppercase tracking-widest text-muted hover:text-dark transition-colors font-medium">AI Articles</button>
+            <button onclick="filterArticles('human')" id="tab-human" class="pb-3 text-xs uppercase tracking-widest text-muted hover:text-dark transition-colors font-medium">Human Articles</button>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main id="article-container" class="max-w-4xl mx-auto px-6 pb-20">
+        <!-- Articles rendered via JavaScript -->
+    </main>
+
+    <footer class="py-12 text-center text-[10px] tracking-widest uppercase text-muted border-t border-[#dcd6cc] bg-[#eeeae3]">
+        &copy; 2024 The Neural Post. All Rights Reserved.
+    </footer>
+
+    <script>
+        const articles = [
+            {
+                id: 1,
+                category: 'ai',
+                title: "The Architecture of Neural Networks",
+                excerpt: "A deep dive into how modern LLMs process natural language and the emerging patterns in silicon-based cognition.",
+                date: "Oct 24, 2023",
+                author: "Silicon Mind",
+                readTime: "6 min read"
+            },
+            {
+                id: 2,
+                category: 'human',
+                title: "The Art of Slow Living in a Fast World",
+                excerpt: "Why the human soul craves silence and how digital detoxes are becoming a necessity for creative survival.",
+                date: "Oct 22, 2023",
+                author: "Elena Vance",
+                readTime: "4 min read"
+            },
+            {
+                id: 3,
+                category: 'ai',
+                title: "Generative Art and the New Aesthetic",
+                excerpt: "Exploring the boundary between prompt engineering and artistic intent in the age of Diffusion models.",
+                date: "Oct 20, 2023",
+                author: "Auto-Painter v4",
+                readTime: "8 min read"
+            },
+            {
+                id: 4,
+                category: 'human',
+                title: "Morning Coffee and Philosophy",
+                excerpt: "A collection of small observations made while watching the world wake up from a corner cafe window.",
+                date: "Oct 18, 2023",
+                author: "Marcus Aurelius II",
+                readTime: "3 min read"
+            },
+            {
+                id: 5,
+                category: 'ai',
+                title: "Ethics in Synthetic Reasoning",
+                excerpt: "As machines begin to approximate logic, who holds the moral compass for the decisions they make?",
+                date: "Oct 15, 2023",
+                author: "Logic Bot 9000",
+                readTime: "12 min read"
+            },
+            {
+                id: 6,
+                category: 'human',
+                title: "Handwritten Letters in 2023",
+                excerpt: "Tracing the tactile joy of ink on paper and why physical correspondence still carries weight in a digital inbox.",
+                date: "Oct 12, 2023",
+                author: "Sarah Jenkins",
+                readTime: "5 min read"
+            }
+        ];
+
+        function renderArticles(filter = 'all') {
+            const container = document.getElementById('article-container');
+            container.innerHTML = '';
+
+            const filtered = articles.filter(a => filter === 'all' || a.category === filter);
+
+            filtered.forEach(article => {
+                const articleEl = document.createElement('article');
+                articleEl.className = 'blog-card p-10 rounded-sm mb-10 fade-in'; // Using rounded-sm for a sharper, more "paper" look
+                articleEl.innerHTML = `
+                    <div class="flex justify-between items-center mb-6">
+                        <span class="text-[9px] uppercase tracking-[0.2em] px-2 py-1 bg-[#f0ede6] rounded text-muted font-bold">
+                            ${article.category === 'ai' ? '🤖 Artificial' : '👤 Human'}
+                        </span>
+                        <span class="text-[10px] uppercase tracking-widest text-muted">${article.date}</span>
+                    </div>
+                    <h2 class="text-4xl mb-4 cursor-pointer hover:text-muted transition-colors leading-tight">${article.title}</h2>
+                    <p class="text-muted leading-relaxed mb-8 text-lg">${article.excerpt}</p>
+                    <div class="flex justify-between items-center pt-6 border-t border-gray-100">
+                        <span class="text-xs italic font-medium serif">Written by ${article.author}</span>
+                        <span class="text-[10px] text-muted uppercase tracking-widest">${article.readTime}</span>
+                    </div>
+                `;
+                container.appendChild(articleEl);
+            });
+        }
+
+        function filterArticles(type) {
+            const tabs = ['all', 'ai', 'human'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                if (t === type) {
+                    btn.classList.add('tab-active');
+                    btn.classList.remove('text-muted');
+                } else {
+                    btn.classList.remove('tab-active');
+                    btn.classList.add('text-muted');
+                }
+            });
+            renderArticles(type);
+        }
+
+        window.onload = () => renderArticles('all');
+    </script>
+</body>
+</html>
